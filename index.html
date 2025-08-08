@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #6b21a8;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Glassmorphism for cards */
+    .glass-card {
+      background: rgba(255 255 255 / 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(0 0 0 / 0.37);
+      border-radius: 1rem;
+      border: 1px solid rgba(255 255 255 / 0.15);
+    }
+
+    /* Animated gradient circle for stats widget */
+    .gradient-animated {
+      background: linear-gradient(270deg, #8b5cf6, #f43f5e, #fb923c, #8b5cf6);
+      background-size: 800% 800%;
+      animation: gradientShift 8s ease infinite, pulseEffect 2s infinite alternate; /* Tambahkan pulseEffect */
+      border-radius: 50%;
+      /* Tambahkan properti untuk stabilisasi dan gerakan */
+      transform-origin: center center; /* Pastikan transformasi dari tengah */
+    }
+
+    @keyframes gradientShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Keyframes baru untuk efek pulse dan gerakan stabil */
+    @keyframes pulseEffect {
+      0% {
+        transform: scale(1) translateY(0px);
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+      }
+      50% {
+        transform: scale(1.02) translateY(-2px); /* Sedikit membesar dan naik */
+        box-shadow: 0 0 15px 5px rgba(244, 63, 94, 0.4);
+      }
+      100% {
+        transform: scale(1) translateY(0px);
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+      }
+    }
+
+    /* Vertical icons bar */
+    .vertical-icons::-webkit-scrollbar {
+      width: 6px;
+    }
+    .vertical-icons::-webkit-scrollbar-thumb {
+      background-color: #4b5563;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-[#3d0d0e] via-[#5e1a1e] to-[#411515] min-h-screen text-white font-sans flex select-none">
+
+  <!-- Sidebar left -->
+  <aside class="flex flex-col bg-[#2b1213] w-16 py-6 space-y-6 items-center">
+    <button class="mb-auto w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-700 hover:brightness-110 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+      </svg>
+    </button>
+    <nav class="space-y-8 text-gray-300 text-xl flex flex-col items-center">
+      <button title="Games" class="hover:text-pink-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h.01M15 12h.01M21 16V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3h12a3 3 0 003-3z" /></svg></button>
+      <button title="Play" class="hover:text-pink-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-6.586-3.793a1 1 0 00-1.486.866v7.554a1 1 0 001.486.866l6.586-3.793a1 1 0 000-1.74z" /></svg></button>
+      <button title="Gift" class="hover:text-pink-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8m16 0H4m16 0v-2a4 4 0 10-8 0v2m0 0H4m16 0v6" /></svg></button>
+      <button title="Profile" class="hover:text-pink-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 14a4 4 0 01-8 0m8 0a4 4 0 01-8 0m8 0a4 4 0 00-8 0m8 0v2a2 2 0 11-4 0v-2m0 0v-2a2 2 0 014 0v2z" /></svg></button>
+    </nav>
+    <button class="mt-auto flex items-center justify-center bg-gradient-to-r from-pink-600 to-purple-600 hover:brightness-110 transition rounded-full w-12 h-12">
+      <span class="text-4xl leading-none font-bold select-none">+</span>
+    </button>
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1 px-8 py-6 flex flex-col gap-8">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center">
+      <div class="text-gray-200 text-lg font-semibold">Aditya <span class="text-white">ATS</span></div>
+      <div class="relative flex-1 max-w-md ml-8">
+        <input 
+          type="search" 
+          placeholder="Search"
+          class="w-full bg-[#4c1d22] rounded-xl py-2 px-4 focus:outline-none focus:ring-2 focus:ring-pink-600 text-gray-300 placeholder-gray-500"
+        />
+        <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-2.5 h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 17a6 6 0 100-12 6 6 0 000 12z" />
+        </svg>
+      </div>
+      <div class="flex items-center space-x-6">
+        <button aria-label="Cart" class="relative hover:text-pink-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4" />
+            <circle cx="7" cy="21" r="2" />
+            <circle cx="17" cy="21" r="2" />
+          </svg>
+          <span class="absolute top-0 right-0 bg-pink-600 rounded-full w-2.5 h-2.5"></span>
+        </button>
+        <button aria-label="Notifications" class="relative hover:text-pink-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <span class="absolute top-0 right-0 bg-pink-600 rounded-full w-2.5 h-2.5"></span>
+        </button>
+        <button aria-label="User Profile" class="rounded-full border-2 border-pink-600 hover:border-pink-400 overflow-hidden w-10 h-10">
+          <img 
+            src="user.jpg" 
+            alt="Foto profil user"
+            class="w-full h-full object-cover"
+            onerror="this.onerror=null;this.src='https://placehold.co/40x40/png?text=No+Image'"
+          />
+        </button>
+      </div>
+    </header>
+
+    <!-- Featured game -->
+    <section class="flex flex-col md:flex-row gap-6 glass-card p-6">
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="px-3 py-1 rounded-full bg-pink-600 text-black font-semibold text-xs">Popular</span>
+          <button title="Watch trailer/play" class="text-white opacity-80 hover:opacity-100 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" stroke="none">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </button>
+          <button title="Add to wishlist" class="opacity-80 hover:opacity-100 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 10-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </button>
+        </div>
+        <h2 class="text-3xl font-bold mb-2">Teknologi by Aditya</h2>
+        <p class="text-gray-300 max-w-md mb-4 leading-relaxed">
+          Teknologi: Menembus batas, meretas masa depan, menghubungkan dunia, dan mengubah kehidupan.
+        </p>
+        <div class="flex items-center gap-2">
+          <div class="flex -space-x-3">
+            <img src="A.jpg" alt="Small round profile image of player A" class="rounded-full border-2 border-[#3b0764] w-10 h-10" onerror="this.onerror=null;this.src='https://placehold.co/40x40/7c3aed/ffffff?text=A'" />
+            <img src="B.jpg" alt="Small round profile image of player B" class="rounded-full border-2 border-[#44067f] w-10 h-10" onerror="this.onerror=null;this.src='https://placehold.co/40x40/9333ea/ffffff?text=B'" />
+            <img src="C.jpg" alt="Small round profile image of player C" class="rounded-full border-2 border-[#3b0764] w-10 h-10" onerror="this.onerror=null;this.src='https://placehold.co/40x40/6d28d9/ffffff?text=C'" />
+          </div>
+          <span class="bg-[#442a53] text-white rounded-full text-xs font-semibold px-3 py-1">+1000 Reviews</span>
+        </div>
+      </div>
+      <div class="flex-1 flex justify-center items-center">
+        <img 
+          src="foto.jpg" 
+          alt="Foto pribadi Aditya"
+          class="rounded-xl shadow-lg object-cover max-h-[280px] max-w-full w-auto" 
+          onerror="this.onerror=null;this.src='https://placehold.co/400x280/png?text=Image+Unavailable'"
+        />
+      </div>
+    </section>
+
+    <!-- New Games & Last Downloads + Stats container -->
+    <section class="flex flex-col md:flex-row gap-6">
+
+      <!-- New Games -->
+      <div class="flex-1 glass-card p-6 space-y-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-semibold text-xl">Karya Teknologi</h3>
+          <button class="text-pink-600 hover:underline">See More</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <a href="https://aditia1922.github.io/ats-clothing/#" target="_blank" class="relative rounded-2xl overflow-hidden cursor-pointer hover:brightness-110 transition">
+            <img 
+              src="karyaweb.jpg" 
+              alt="Foto karya web Aditya" 
+              class="object-cover w-full h-40" 
+              onerror="this.onerror=null;this.src='https://placehold.co/400x240/png?text=No+Image'"
+            />
+            <div class="absolute top-3 right-3 bg-pink-700 rounded-full p-1 hover:bg-pink-800 transition" title="Add to wishlist">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+              </svg>
+            </div>
+            <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 text-white">
+              <h4 class="font-semibold text-lg">Web Penjualan Baju ATS</h4>
+              <p class="text-xs font-light max-w-xs">Karya web Aditya ATS.</p>
+            </div>
+          </a>
+          <a href="https://aditia1922.github.io/Desajonggrang/" target="_blank" class="relative rounded-2xl overflow-hidden cursor-pointer hover:brightness-110 transition">
+            <img 
+              src="proyekweb.jpg" 
+              alt="Foto proyek web Aditya"
+              class="object-cover w-full h-40" 
+              onerror="this.onerror=null;this.src='https://placehold.co/400x240/png?text=No+Image'" 
+            />
+            <div class="absolute top-3 right-3 bg-pink-700 rounded-full p-1 hover:bg-pink-800 transition" title="Add to wishlist">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+              </svg>
+            </div>
+            <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 text-white">
+              <h4 class="font-semibold text-lg">Web Desa Jonggrang</h4>
+              <p class="text-xs font-light max-w-xs">Proyek web Aditya.</p>
+            </div>
+          </a>
+          <a href="https://aditia1922.github.io/web-pesan-Menu-makan/" target="_blank" class="relative rounded-2xl overflow-hidden cursor-pointer hover:brightness-110 transition">
+            <img 
+              src="karya2.jpg" 
+              alt="Karya teknologi kedua Aditya"
+              class="object-cover w-full h-40" 
+              onerror="this.onerror=null;this.src='https://placehold.co/400x240/png?text=No+Image'"
+            />
+            <div class="absolute top-3 right-3 bg-pink-700 rounded-full p-1 hover:bg-pink-800 transition" title="Add to wishlist">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+              </svg>
+            </div>
+            <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 text-white">
+              <h4 class="font-semibold text-lg">Web Kasir Menu Makanan</h4>
+              <p class="text-xs font-light max-w-xs">Karya teknologi.</p>
+            </div>
+          </a>
+          <a href="https://aditia1922.github.io/WEB-KARIR/" target="_blank" class="relative rounded-2xl overflow-hidden cursor-pointer hover:brightness-110 transition">
+            <img 
+              src="karya3.jpg" 
+              alt="Karya teknologi ketiga Aditya"
+              class="object-cover w-full h-40" 
+              onerror="this.onerror=null;this.src='https://placehold.co/400x240/png?text=No+Image'"
+            />
+            <div class="absolute top-3 right-3 bg-pink-700 rounded-full p-1 hover:bg-pink-800 transition" title="Add to wishlist">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+              </svg>
+            </div>
+            <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 text-white">
+              <h4 class="font-semibold text-lg">Web lowongan Kerja</h4>
+              <p class="text-xs font-light max-w-xs">Karya teknologi.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Last Downloads and Statistics -->
+      <div class="flex flex-col sm:flex-row gap-6 md:flex-col md:w-[360px]">
+
+        <!-- Last Downloads -->
+        <div class="glass-card p-6 flex items-center gap-6 rounded-2xl">
+          <img 
+            src="FIFA23.jpg" 
+            alt="Icon logo of FIFA 23 soccer sports simulator game"
+            class="rounded-xl flex-shrink-0 w-20 h-20"
+            onerror="this.onerror=null;this.src='https://placehold.co/80x80/7f1d1d/fff?text=FIFA+23'"
+          />
+          <div class="flex-1">
+            <h4 class="font-semibold text-xl mb-1">Mobile Legends</h4>
+            <p class="text-sm text-pink-400 font-semibold inline-block bg-pink-900 rounded-md px-3 py-0.5">Sports simulator</p>
+            <p class="mt-1 text-sm text-gray-400 font-light">1 hour 23 min.</p>
+            <p class="text-xs text-gray-500">265Mb of 1.23Gb</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button title="Pause download" class="p-2 rounded-full bg-pink-700 hover:bg-pink-800 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6" />
+              </svg>
+            </button>
+            <button title="Cancel download" class="p-2 rounded-full bg-pink-700 hover:bg-pink-800 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="glass-card p-6 rounded-3xl flex flex-col justify-center items-center gap-6 relative">
+          <div class="relative flex justify-center items-center w-40 h-40">
+            <div class="gradient-animated w-40 h-40 absolute top-0 left-0 blur-3xl opacity-70"></div>
+            <div class="relative bg-[#331a33] rounded-full w-36 h-36 flex flex-col justify-center items-center border border-pink-600">
+              <span class="text-2xl font-semibold">Total hours</span>
+              <span class="text-5xl font-bold mt-2">12,340h</span>
+            </div>
+          </div>
+          <div class="flex space-x-6">
+            <div class="flex flex-col items-center">
+              <img src="D.jpg" alt="Profile image D" class="w-14 h-14 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/56x56/pink/white?text=D'" />
+              <span class="mt-1 text-sm">2,340h</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <img src="S.jpg" alt="Profile image S" class="w-14 h-14 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/56x56/purple/white?text=S'" />
+              <span class="mt-1 text-sm">5,420h</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <img src="V.jpg" alt="Profile image V" class="w-14 h-14 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/56x56/violet/white?text=V'" />
+              <span class="mt-1 text-sm">4,580h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Sidebar right: friends/status -->
+  <aside class="w-16 bg-[#2b1213] py-6 flex flex-col items-center gap-4 overflow-y-auto vertical-icons">
+    <!-- Example avatars with green dot for 'In Game', grey for offline -->
+    <div class="relative">
+      <img src="JS.jpg" alt="Friend avatar JS" class="w-10 h-10 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/40x40/6b7280/ffffff?text=JS'"/>
+      <span class="absolute bottom-0 right-0 w-3 h-3 bg-gray-700 rounded-full ring-2 ring-[#2b1213]" title="Offline"></span>
+    </div>
+    <div class="relative">
+      <img src="AL.jpg" alt="Friend avatar AL" class="w-10 h-10 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/40x40/16a34a/ffffff?text=AL'"/>
+      <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-[#2b1213]" title="In Game"></span>
+    </div>
+    <div class="relative">
+      <img src="RM.jpg" alt="Friend avatar RM" class="w-10 h-10 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/40x40/f97316/ffffff?text=RM'"/>
+      <span class="absolute bottom-0 right-0 w-3 h-3 bg-yellow-500 rounded-full ring-2 ring-[#2b1213]" title="Busy"></span>
+    </div>
+    <div class="relative">
+      <img src="KT.jpg" alt="Friend avatar KT" class="w-10 h-10 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/40x40/f43f5e/ffffff?text=KT'"/>
+      <span class="absolute bottom-0 right-0 w-3 h-3 bg-red-600 rounded-full ring-2 ring-[#2b1213]" title="Do not disturb"></span>
+    </div>
+    <div class="relative">
+      <img src="MQ.jpg" alt="Friend avatar MQ" class="w-10 h-10 rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/40x40/8b5cf6/ffffff?text=MQ'"/>
+      <span class="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full ring-2 ring-[#2b1213]" title="Online"></span>
+    </div>
+  </aside>
+
+</body>
+</html>
