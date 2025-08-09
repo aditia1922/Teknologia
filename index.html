@@ -593,3 +593,41 @@
 
 </body>
 </html>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // ... kode lainnya tetap sama ...
+
+    // 4. Tombol Love: Toggle antara merah, hitam, putih
+    const loveButton = document.getElementById('loveButton');
+    const loveIcon = loveButton.querySelector('svg');
+    let loveState = 0; // 0: default, 1: merah, 2: hitam, 3: putih
+    
+    loveButton.addEventListener('click', function() {
+      loveState = (loveState + 1) % 4;
+      
+      switch(loveState) {
+        case 1: // Merah
+          loveIcon.style.fill = '#f43f5e';
+          loveIcon.style.stroke = '#f43f5e';
+          this.classList.add('active');
+          break;
+        case 2: // Hitam
+          loveIcon.style.fill = '#000000';
+          loveIcon.style.stroke = '#000000';
+          this.classList.remove('active');
+          break;
+        case 3: // Putih
+          loveIcon.style.fill = '#ffffff';
+          loveIcon.style.stroke = '#ffffff';
+          this.classList.remove('active');
+          break;
+        default: // Default (transparent)
+          loveIcon.style.fill = 'none';
+          loveIcon.style.stroke = 'currentColor';
+          this.classList.remove('active');
+      }
+    });
+
+    // ... kode lainnya tetap sama ...
+  });
+</script>
