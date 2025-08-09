@@ -69,13 +69,129 @@
       background-color: #4b5563;
       border-radius: 4px;
     }
+
+    /* Custom styles for login form */
+    .login-form-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(43, 18, 19, 0.9); /* Slightly darker background for the form */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(0 0 0 / 0.5);
+      border-radius: 1rem;
+      border: 1px solid rgba(255 255 255 / 0.2);
+      padding: 2rem;
+      z-index: 1000; /* Ensure it's on top */
+      display: none; /* Hidden by default */
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .login-form-container.active {
+      display: flex;
+    }
+
+    .login-form-container input[type="text"],
+    .login-form-container input[type="password"] {
+      background-color: #4c1d22;
+      border: 1px solid #6b21a8;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: white;
+      width: 100%;
+    }
+
+    .login-form-container input[type="text"]:focus,
+    .login-form-container input[type="password"]:focus {
+      outline: none;
+      border-color: #ec4899; /* Pink-600 */
+      box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.5);
+    }
+
+    .login-form-container button[type="submit"] {
+      background-color: #ec4899; /* Pink-600 */
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-form-container button[type="submit"]:hover {
+      background-color: #db2777; /* Pink-700 */
+    }
+
+    .login-message {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    .login-message.success {
+      color: #10b981; /* Green-500 */
+    }
+
+    .login-message.error {
+      color: #ef4444; /* Red-500 */
+    }
+
+    /* Animasi untuk gambar profil */
+    @keyframes profileAnimation {
+      0% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.05) rotate(2deg); }
+      50% { transform: scale(1) rotate(0deg); }
+      75% { transform: scale(1.05) rotate(-2deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .animated-profile {
+      animation: profileAnimation 5s infinite ease-in-out;
+    }
+
+    /* Love button animation */
+    .love-button.active svg {
+      fill: #f43f5e;
+      stroke: #f43f5e;
+      animation: heartBeat 0.6s ease-in-out;
+    }
+
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.2); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Typing animation */
+    .typing-text {
+      overflow: hidden;
+      border-right: 2px solid #ec4899;
+      white-space: nowrap;
+      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #ec4899; }
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-[#3d0d0e] via-[#5e1a1e] to-[#411515] min-h-screen text-white font-sans flex select-none">
 
   <!-- Sidebar left -->
   <aside class="flex flex-col bg-[#2b1213] w-16 py-6 space-y-6 items-center">
-    <button class="mb-auto w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-700 hover:brightness-110 transition">
+    <button id="menuButton" class="mb-auto w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-700 hover:brightness-110 transition">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
       </svg>
@@ -108,7 +224,7 @@
         </svg>
       </div>
       <div class="flex items-center space-x-6">
-        <button aria-label="Cart" class="relative hover:text-pink-500">
+        <button aria-label="Cart" class="relative hover:text-pink-500" id="cartButton">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4" />
             <circle cx="7" cy="21" r="2" />
@@ -116,41 +232,59 @@
           </svg>
           <span class="absolute top-0 right-0 bg-pink-600 rounded-full w-2.5 h-2.5"></span>
         </button>
-        <button aria-label="Notifications" class="relative hover:text-pink-500">
+        <button aria-label="Notifications" class="relative hover:text-pink-500" id="notificationButton">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           <span class="absolute top-0 right-0 bg-pink-600 rounded-full w-2.5 h-2.5"></span>
         </button>
-        <button aria-label="User Profile" class="rounded-full border-2 border-pink-600 hover:border-pink-400 overflow-hidden w-10 h-10">
+        <!-- Tombol Profil Pengguna dengan ID baru -->
+        <button id="userProfileButton" aria-label="User Profile" class="rounded-full border-2 border-pink-600 hover:border-pink-400 overflow-hidden w-10 h-10">
           <img 
             src="user.jpg" 
             alt="Foto profil user"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover animated-profile"
             onerror="this.onerror=null;this.src='https://placehold.co/40x40/png?text=No+Image'"
           />
         </button>
       </div>
     </header>
 
+    <!-- Form Login Container -->
+    <div id="loginFormContainer" class="login-form-container">
+      <h3 class="text-2xl font-bold text-center text-white">Login</h3>
+      <form id="loginForm" class="flex flex-col gap-4">
+        <div>
+          <label for="username" class="block text-gray-300 text-sm font-bold mb-2">Username:</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+        <div>
+          <label for="password" class="block text-gray-300 text-sm font-bold mb-2">Password:</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit">Login</button>
+        <p id="loginStatusMessage" class="login-message"></p>
+      </form>
+    </div>
+
     <!-- Featured game -->
     <section class="flex flex-col md:flex-row gap-6 glass-card p-6">
       <div class="flex-1">
         <div class="flex items-center gap-3 mb-3">
           <span class="px-3 py-1 rounded-full bg-pink-600 text-black font-semibold text-xs">Popular</span>
-          <button title="Watch trailer/play" class="text-white opacity-80 hover:opacity-100 transition">
+          <button id="playButton" title="Watch trailer/play" class="text-white opacity-80 hover:opacity-100 transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" stroke="none">
               <path d="M8 5v14l11-7z"/>
             </svg>
           </button>
-          <button title="Add to wishlist" class="opacity-80 hover:opacity-100 transition">
+          <button id="loveButton" title="Add to wishlist" class="opacity-80 hover:opacity-100 transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 10-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
             </svg>
           </button>
         </div>
         <h2 class="text-3xl font-bold mb-2">Teknologi by Aditya</h2>
-        <p class="text-gray-300 max-w-md mb-4 leading-relaxed">
+        <p id="techDescription" class="text-gray-300 max-w-md mb-4 leading-relaxed">
           Teknologi: Menembus batas, meretas masa depan, menghubungkan dunia, dan mengubah kehidupan.
         </p>
         <div class="flex items-center gap-2">
@@ -230,7 +364,7 @@
             </div>
             <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 text-white">
               <h4 class="font-semibold text-lg">Web Kasir Menu Makanan</h4>
-              <p class="text-xs font-light max-w-xs">Karya teknologi.</p>
+              <p class="text-xs font-light max-w-xs">Masuk dengan Nama Admin dan pasword admin123.</p>
             </div>
           </a>
           <a href="https://aditia1922.github.io/WEB-KARIR/" target="_blank" class="relative rounded-2xl overflow-hidden cursor-pointer hover:brightness-110 transition">
@@ -247,7 +381,7 @@
             </div>
             <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 text-white">
               <h4 class="font-semibold text-lg">Web lowongan Kerja</h4>
-              <p class="text-xs font-light max-w-xs">Karya teknologi.</p>
+              <p class="text-xs font-light max-w-xs">Untuk membantu rakyat cari kerja.</p>
             </div>
           </a>
         </div>
@@ -257,7 +391,7 @@
       <div class="flex flex-col sm:flex-row gap-6 md:flex-col md:w-[360px]">
 
         <!-- Last Downloads -->
-        <div class="glass-card p-6 flex items-center gap-6 rounded-2xl">
+        <div class="glass-card p-6 flex items-center gap-6 rounded-2xl" id="mobileLegendsCard">
           <img 
             src="FIFA23.jpg" 
             alt="Icon logo of FIFA 23 soccer sports simulator game"
@@ -337,6 +471,125 @@
       <span class="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full ring-2 ring-[#2b1213]" title="Online"></span>
     </div>
   </aside>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const userProfileButton = document.getElementById('userProfileButton');
+      const loginFormContainer = document.getElementById('loginFormContainer');
+      const loginForm = document.getElementById('loginForm');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const loginStatusMessage = document.getElementById('loginStatusMessage');
+      const cartButton = document.getElementById('cartButton');
+      const notificationButton = document.getElementById('notificationButton');
+      const mobileLegendsCard = document.getElementById('mobileLegendsCard');
+      const loveButton = document.getElementById('loveButton');
+      const playButton = document.getElementById('playButton');
+      const techDescription = document.getElementById('techDescription');
+      const menuButton = document.getElementById('menuButton'); // Menambahkan ini
+
+      // "Database" sederhana untuk simulasi login
+      const users = [
+        { username: 'aditya', password: 'ats' },
+        { username: 'user1', password: 'pass1' },
+        { username: 'admin', password: 'admin' }
+      ];
+
+      // Menampilkan/menyembunyikan form login saat tombol profil diklik
+      userProfileButton.addEventListener('click', function() {
+        loginFormContainer.classList.toggle('active');
+        // Reset form dan pesan status setiap kali form dibuka
+        loginForm.reset();
+        loginStatusMessage.textContent = '';
+        loginStatusMessage.classList.remove('success', 'error');
+      });
+
+      // Menangani submit form login
+      loginForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Mencegah form dari reload halaman
+
+        const enteredUsername = usernameInput.value;
+        const enteredPassword = passwordInput.value;
+
+        // Cari pengguna di "database"
+        const foundUser = users.find(user => 
+          user.username === enteredUsername && user.password === enteredPassword
+        );
+
+        if (foundUser) {
+          loginStatusMessage.textContent = 'Login Berhasil! Selamat datang, ' + foundUser.username + '!';
+          loginStatusMessage.classList.remove('error');
+          loginStatusMessage.classList.add('success');
+          
+          // Opsional: Sembunyikan form setelah beberapa detik jika login berhasil
+          setTimeout(() => {
+            loginFormContainer.classList.remove('active');
+            loginStatusMessage.textContent = ''; // Bersihkan pesan
+          }, 2000); 
+
+        } else {
+          loginStatusMessage.textContent = 'Username atau password salah.';
+          loginStatusMessage.classList.remove('success');
+          loginStatusMessage.classList.add('error');
+        }
+      });
+
+      // Menutup form jika mengklik di luar area form (opsional)
+      document.addEventListener('click', function(event) {
+        if (!loginFormContainer.contains(event.target) && !userProfileButton.contains(event.target) && loginFormContainer.classList.contains('active')) {
+          loginFormContainer.classList.remove('active');
+          loginStatusMessage.textContent = ''; // Bersihkan pesan
+          loginStatusMessage.classList.remove('success', 'error');
+        }
+      });
+
+      // Fungsionalitas baru:
+      // 1. Logo Keranjang: Masuk ke Play Store
+      cartButton.addEventListener('click', function() {
+        window.open('https://play.google.com/store', '_blank');
+      });
+
+      // 2. Logo FIFA23 (Mobile Legends): Masuk ke Play Store game ML
+      mobileLegendsCard.addEventListener('click', function() {
+        window.open('https://play.google.com/store/apps/details?id=com.mobile.legends', '_blank');
+      });
+
+      // 3. Logo Pemberitahuan: Masuk database (simulasi) dan muncul tulisan kosong
+      notificationButton.addEventListener('click', function() {
+        console.log("Mencoba mengakses database...");
+        console.log("Data pemberitahuan: Kosong.");
+        alert("Pemberitahuan: Kosong."); // Menampilkan alert sebagai simulasi
+      });
+
+      // 4. Tombol Love: Toggle heart icon dan animasi
+      loveButton.addEventListener('click', function() {
+        this.classList.toggle('active');
+      });
+
+      // 5. Tombol Play: Menambahkan teks dan efek ketikan
+      playButton.addEventListener('click', function() {
+        const fullText = "Teknologi: Menembus batas, meretas masa depan, menghubungkan dunia, dan mengubah kehidupan. Dengan inovasi yang tak terbatas, ia membuka jalan menuju kemungkinan tak terbayangkan, menciptakan peluang baru, dan memberdayakan individu untuk mewujudkan impian yang dulu hanya ada dalam imajinasi. Teknologi adalah kunci untuk menghadapi tantangan global dan menciptakan dunia yang lebih cerdas, lebih terhubung, dan lebih inklusif.";
+        
+        // Simpan teks asli untuk reset nanti
+        const originalText = techDescription.textContent;
+        const originalClasses = techDescription.className;
+        
+        // Set teks baru dan tambahkan class typing
+        techDescription.textContent = fullText;
+        techDescription.className = originalClasses + ' typing-text';
+        
+        // Setelah animasi selesai (3.5 detik), hapus class typing
+        setTimeout(() => {
+          techDescription.className = originalClasses;
+        }, 3500);
+      });
+
+      // Fungsionalitas baru untuk tombol garis 3
+      menuButton.addEventListener('click', function() {
+        window.open('https://aditia1922.github.io/Sport/', '_blank');
+      });
+    });
+  </script>
 
 </body>
 </html>
