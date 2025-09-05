@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -186,6 +185,16 @@
       from, to { border-color: transparent }
       50% { border-color: #ec4899; }
     }
+
+    /* Animasi untuk item baru */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in-item {
+      animation: fadeIn 0.5s ease forwards;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-[#3d0d0e] via-[#5e1a1e] to-[#411515] min-h-screen text-white font-sans flex select-none">
@@ -314,9 +323,9 @@
       <div class="flex-1 glass-card p-6 space-y-6">
         <div class="flex justify-between items-center mb-3">
           <h3 class="font-semibold text-xl">Karya Teknologi</h3>
-          <button class="text-pink-600 hover:underline">See More</button>
+          <button id="seeMoreButton" class="text-pink-600 hover:underline">See More</button>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div id="techProjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <a href="https://aditia1922.github.io/ats-clothing/#" target="_blank" class="relative rounded-2xl overflow-hidden cursor-pointer hover:brightness-110 transition">
             <img 
               src="karyaweb.jpg" 
@@ -487,7 +496,73 @@
       const loveButton = document.getElementById('loveButton');
       const playButton = document.getElementById('playButton');
       const techDescription = document.getElementById('techDescription');
-      const menuButton = document.getElementById('menuButton'); // Menambahkan ini
+      const menuButton = document.getElementById('menuButton');
+      const seeMoreButton = document.getElementById('seeMoreButton');
+      const techProjectsGrid = document.getElementById('techProjectsGrid');
+
+      // Data untuk proyek tambahan
+      const additionalProjects = [
+        {
+          title: "Web Edit PDF",
+          description: "untuk Mengedit PDF gratis Gausah Mbayar Boss",
+          image: "5.jpg",
+          link: "https://lightpdf.com/"
+        },
+        {
+          title: "Aplikasi Dessigner",
+          description: "Halah Gratis pokoknya bebas",
+          image: "6.jpg",
+          link: "https://www.lovart.ai/"
+        },
+        {
+          title: "Web all in one",
+          description: "Aplikasi lengkap Semua Ada",
+          image: "7.jpg",
+          link: "https://filecr.com/us-en/"
+        },
+        {
+          title: "Aplikasi Resep Makanan",
+          description: "Aplikasi ini cocok buat kamu yang mau jadi chef junet",
+          image: "8.jpg",
+          link: "https://myfridgefood.com/"
+        },
+        {
+          title: "Editing Poto/Gambar Digital",
+          description: "Bisa edit potomu gonta ganti baju tanpa beli karna ga punya duit kan wkwk",
+          image: "9.jpg",
+          link: "https://www.aiease.ai/app/dashboard"
+        },
+        {
+          title: "Aplikasi Fitness Personal",
+          description: "Tools tracking latihan dan nutrisi dengan AI coach.",
+          image: "10.jpg",
+          link: "https://musclewiki.com/"
+        },
+        {
+          title: "Web Kuliah Online dari China",
+          description: "Khusus untuk yang bener bener mau belajar Teknologi Dunia untuk jaman sekarang",
+          image: "11.jpg",
+          link: "https://alison.com/"
+        },
+        {
+          title: "Aplikasi Melihat CCTV di Seluruh Dunia",
+          description: "jangan di buat aneh-aneh jika berani membuat aneh aditya siap melacakmu",
+          image: "2.jpg",
+          link: "https://www.shodan.io/"
+        },
+        {
+          title: "Web Travel Ke Seluruh Dunia",
+          description: "Website mebantu perjalananmu ke seluruh dunia",
+          image: "3.jpg",
+          link: "https://mult.dev/"
+        },
+        {
+          title: "Web Untuk Merakit PC Gratis boss",
+          description: "Kalo di tempat lain mbayarkan Saya gratis mumpung baik Hati tapi jangan lupa terima kasih",
+          image: "4.jpg",
+          link: "https://buildcores.com/"
+        }
+      ];
 
       // "Database" sederhana untuk simulasi login
       const users = [
@@ -589,46 +664,86 @@
       menuButton.addEventListener('click', function() {
         window.open('https://aditia1922.github.io/Sport/', '_blank');
       });
+
+      // Fungsionalitas untuk tombol See More
+      seeMoreButton.addEventListener('click', function() {
+        // Tambahkan 10 proyek baru
+        additionalProjects.forEach((project, index) => {
+          setTimeout(() => {
+            const newProject = document.createElement('a');
+            newProject.href = project.link;
+            newProject.target = "_blank";
+            newProject.className = "relative rounded-2xl overflow-hidden cursor-pointer hover:brightness-110 transition fade-in-item";
+            newProject.innerHTML = `
+              <img 
+                src="${project.image}" 
+                alt="${project.title}" 
+                class="object-cover w-full h-40" 
+                onerror="this.onerror=null;this.src='https://placehold.co/400x240/png?text=No+Image'"
+              />
+              <div class="absolute top-3 right-3 bg-pink-700 rounded-full p-1 hover:bg-pink-800 transition" title="Add to wishlist">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                </svg>
+              </div>
+              <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0 text-white">
+                <h4 class="font-semibold text-lg">${project.title}</h4>
+                <p class="text-xs font-light max-w-xs">${project.description}</p>
+              </div>
+            `;
+            techProjectsGrid.appendChild(newProject);
+          }, index * 100); // Stagger animations
+        });
+
+        // Ubah teks tombol setelah diklik
+        seeMoreButton.textContent = "Loading More...";
+        seeMoreButton.disabled = true;
+        
+        // Setelah selesai, sembunyikan tombol
+        setTimeout(() => {
+          seeMoreButton.style.display = "none";
+        }, 1500);
+      });
     });
   </script>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // ... kode lainnya tetap sama ...
+
+      // 4. Tombol Love: Toggle antara merah, hitam, putih
+      const loveButton = document.getElementById('loveButton');
+      const loveIcon = loveButton.querySelector('svg');
+      let loveState = 0; // 0: default, 1: merah, 2: hitam, 3: putih
+      
+      loveButton.addEventListener('click', function() {
+        loveState = (loveState + 1) % 4;
+        
+        switch(loveState) {
+          case 1: // Merah
+            loveIcon.style.fill = '#f43f5e';
+            loveIcon.style.stroke = '#f43f5e';
+            this.classList.add('active');
+            break;
+          case 2: // Hitam
+            loveIcon.style.fill = '#000000';
+            loveIcon.style.stroke = '#000000';
+            this.classList.remove('active');
+            break;
+          case 3: // Putih
+            loveIcon.style.fill = '#ffffff';
+            loveIcon.style.stroke = '#ffffff';
+            this.classList.remove('active');
+            break;
+          default: // Default (transparent)
+            loveIcon.style.fill = 'none';
+            loveIcon.style.stroke = 'currentColor';
+            this.classList.remove('active');
+        }
+      });
+
+      // ... kode lainnya tetap sama ...
+    });
+  </script>
 </body>
 </html>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // ... kode lainnya tetap sama ...
-
-    // 4. Tombol Love: Toggle antara merah, hitam, putih
-    const loveButton = document.getElementById('loveButton');
-    const loveIcon = loveButton.querySelector('svg');
-    let loveState = 0; // 0: default, 1: merah, 2: hitam, 3: putih
-    
-    loveButton.addEventListener('click', function() {
-      loveState = (loveState + 1) % 4;
-      
-      switch(loveState) {
-        case 1: // Merah
-          loveIcon.style.fill = '#f43f5e';
-          loveIcon.style.stroke = '#f43f5e';
-          this.classList.add('active');
-          break;
-        case 2: // Hitam
-          loveIcon.style.fill = '#000000';
-          loveIcon.style.stroke = '#000000';
-          this.classList.remove('active');
-          break;
-        case 3: // Putih
-          loveIcon.style.fill = '#ffffff';
-          loveIcon.style.stroke = '#ffffff';
-          this.classList.remove('active');
-          break;
-        default: // Default (transparent)
-          loveIcon.style.fill = 'none';
-          loveIcon.style.stroke = 'currentColor';
-          this.classList.remove('active');
-      }
-    });
-
-    // ... kode lainnya tetap sama ...
-  });
-</script>
